@@ -146,10 +146,13 @@ module.exports = (env, argv) => {
         }),
         new AddAssetHtmlWebpackPlugin({
           filepath: path.join(__dirname, './dll', 'dll.*.js')
-        })
+        }),
+        new webpack.HotModuleReplacementPlugin()
       ]
     ],
     devServer: {
+      historyApiFallback: true,
+      hot: true,
       publicPath: '/',
       port: 9000,
       noInfo: false,
