@@ -1,0 +1,17 @@
+html, body, :global(#app) {
+  height: 100%;
+}
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  > #app {
+    height: 100%;
+    .ant-spin-container {
+      height: 100%;
+    }
+  }
+}
+  

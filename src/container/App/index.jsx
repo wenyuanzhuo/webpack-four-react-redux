@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { Spin } from 'antd';
+import { getNavData } from 'common/nav';
+import { getLayout, getRouteData } from 'routes'
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      getNavData,
+      getRouteData: (path) => {
+        return getRouteData(getNavData, path)
+      }
+    }
+  }
   render() {
+    const { getNavData } = this.state;
+    const UserLayout = getLayout(getNavData, 'UserLayout').component;
+    const BasicLayout = getLayout(getNavData, 'BasicLayout').component;
     return (
-      <div className="container"> { /* your usual react-router v4 routing 所以动态渲染path render*/ }
-        <header className="header"></header>
-        <Switch> 
-          <Route path="/" render={() => (<div>Match</div>)} />
-          <Route path="/miss" render={() => (<div>Miss</div>)} />
-        </Switch>
-        <footer className="footer">footer</footer>
-      </div>
+      <Switch>
+        <Route path="/user" render={(props) => <UserLayout {...props} {...this.state}/>} />
+        <Route path="/" render={(props) => <BasicLayout {...props} {...this.state}/>} />
+      </Switch>
     )
   }
 }

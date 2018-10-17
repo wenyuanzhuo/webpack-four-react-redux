@@ -4,6 +4,7 @@ const AddAssetHtmlWebpackPlugin = require("add-asset-html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const AntdScssThemePlugin = require('antd-scss-theme-plugin');
 const path = require('path');
 const config = {
   buildPath: path.resolve(`build/localhost`),
@@ -13,6 +14,12 @@ const dllPath = path.resolve('./dll')
 module.exports = (env, argv) => {
   console.log(`mode: ${argv.mode}`);
   return {
+    entry: {
+      app: path.resolve(__dirname, 'src/index.js'),
+    },
+    output: {
+      publicPath: '/',
+    },
     module: {
       rules: [
         {
@@ -62,20 +69,26 @@ module.exports = (env, argv) => {
             argv.mode === 'production' ? MiniCssExtractPlugin.loader: "style-loader",
             "css-loader",
             "postcss-loader",
-            {
+            AntdScssThemePlugin.themify({
               loader: 'sass-loader',
               options: {
                 // indentedSyntax: true, 
                 outputStyle: 'expanded',// nested嵌套 compact紧凑 compressed压缩 expanded延展
-                // includePaths: [
-                //   path.resolve(__dirname, 'node_modules')
-                // ]
               }
-            }
+            })
           ],
         },
         {
-          test: /\.(png|jpg|gif|woff|woff2)$/,
+          test: /\.less/,
+          use: [
+            argv.mode === 'production' ? MiniCssExtractPlugin.loader: "style-loader",
+            'css-loader',
+            'postcss-loader',
+            'less-loader',
+          ],
+        },
+        {
+          test: /\.(png|jpg|gif|woff|woff2|svg)$/,
           use: [
             {
               loader: 'url-loader',
@@ -132,6 +145,7 @@ module.exports = (env, argv) => {
         filename: "./index.html",
         chunksSortMode: 'none',
       }),
+      new AntdScssThemePlugin('./theme.scss'),
       ...(argv.mode === 'production') ?  [
         new CleanWebpackPlugin(['dist'], {
           root: path.resolve(__dirname, '.')
@@ -170,6 +184,10 @@ module.exports = (env, argv) => {
         styles: `${srcPath}/styles`,
         reducer: `${srcPath}/reducer`,
         action: `${srcPath}/action`,
+        layouts: `${srcPath}/layouts`,
+        common: `${srcPath}/common`,
+        routes: `${srcPath}/routes`,
+        assets: `${srcPath}/assets`,
       }
     }
   }
