@@ -1,19 +1,34 @@
 import React, { Component } from 'react';
 import { Layout, Spin, Breadcrumb } from 'antd';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux'
 import SideBar from 'components/SideBar';
 import Headers from 'components/Headers';
-// import Footers from 'components/Footers';
+import { logout }  from 'action/user';
 const { Content } = Layout;
 
-export default class BasicLayout extends Component {
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.get('user')
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logout: () => dispatch(logout())
+  }
+}
+@withRouter
+@connect(mapStateToProps, mapDispatchToProps)
+class BasicLayout extends Component {
   render() {
-    const { getRouteData } = this.props;
+    const { getRouteData, logout, user } = this.props;
     return  (
       <Layout className="basic-container">
         <SideBar {...this.props}/>
         <Layout>
-          <Headers/>
+          <Headers 
+            {...this.props}
+          />
           <div className="app-page">
             <Content style={{ margin: '24px 24px 0', height: '100%'}}>
               {
@@ -39,3 +54,5 @@ export default class BasicLayout extends Component {
     )
   }
 }
+
+export default BasicLayout

@@ -11,9 +11,12 @@ export default class Headers extends React.Component {
       loginOutPath: '',
     }
   }
-  handleClick = ({ key }) => {  
+  handleClick = ({ key }) => {
+    // 退出登录 解决方案  1.store middleware 捕获action history change
+    const { logout, history } = this.props
     if (key === 'logout') {
-      console.log('退出')
+      logout()
+      history.push('/user/login')
     }
   }
 
