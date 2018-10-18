@@ -168,8 +168,24 @@ module.exports = (env, argv) => {
       historyApiFallback: true,
       hot: true,
       publicPath: '/',
-      port: 9000,
+      port: 8001,
       noInfo: false,
+      host: '0.0.0.0',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST',
+        'Access-Control-Allow-Credentials': true
+      },
+      proxy: {
+        "/api": {
+          target: "http://mock.videojj.com/mock/5b8ca8a2380a47002f43587e/example/image",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api': ''
+        }
+        }
+      }
     },
     devtool: argv.mode === 'production' ? 'source-map': 'eval-source-map',
     //source-map 整个 source map 作为一个单独的文件生成。它为 bundle 添加了一个引用注释，以便开发工具知道在哪里可以找到它
@@ -188,6 +204,7 @@ module.exports = (env, argv) => {
         common: `${srcPath}/common`,
         routes: `${srcPath}/routes`,
         assets: `${srcPath}/assets`,
+        utils: `${srcPath}/utils`
       }
     }
   }

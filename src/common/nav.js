@@ -64,10 +64,10 @@ export const getNavData = [
         ]
       },
       {
-        name: 'zz',
-        icon: 'dashboard',
-        path: 'zz',
-        component: createLoadable(() => import('components/Overview'))
+        name: '图片上传',
+        icon: 'upload',
+        path: 'uploadpicture',
+        component: createLoadable(() => import('components/UploadPicture'))
       }
     ]
   }
