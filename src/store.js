@@ -3,8 +3,18 @@ import { applyMiddleware, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import { createLogger }  from 'redux-logger'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
+import { push } from 'react-router-redux'
 import rootReducer from './reducer'
 import { Iterable } from 'immutable'
+
+const logout = store => next => (action) => {
+  if(action.type === 'USER_LOGOUT') {
+    return Promise.resolve()
+      .then(() => store.dispatch(push('/user/login')))
+      .then(() => next(action))
+  }
+  return next(action)
+}
 const history = createBrowserHistory()
 const middlewares = [thunk]
 
@@ -23,8 +33,10 @@ const logger = createLogger({
 middlewares.push(logger)
 
 
-middlewares.push(routerMiddleware(history))
-
+middlewares.push(
+  routerMiddleware(history),
+  logout,
+)
 const store = createStore(
   connectRouter(history)(rootReducer), // new root reducer with router state
   compose(

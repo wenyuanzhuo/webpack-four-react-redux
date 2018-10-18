@@ -1,12 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Form, Input, Tabs, Button, Icon, Checkbox, Row, Col, Alert } from 'antd';
-
+import { connect } from 'react-redux';
+import { getCurrentUser } from 'action/user'
 const FormItem = Form.Item;
 const { TabPane } = Tabs;
 
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.get('user')
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getCurrentUser: () => dispatch(getCurrentUser())
+  }
+}
+@withRouter
 @Form.create()
-export default class Login extends React.Component {
+@connect(mapStateToProps, mapDispatchToProps)
+class Login extends React.Component {
   state = {
     count: 0,
     type: 'account',
@@ -21,9 +35,24 @@ export default class Login extends React.Component {
       />
     );
   }
-  handleSubmit = (e) => {}
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { getCurrentUser, history } = this.props;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        return getCurrentUser()
+          .then((res) => {      
+            if( res.username === values.userName
+              && Number(res.password) === Number(values.password)) {
+                history.push('/dashboard/overview')
+              }
+          })
+      }
+    });
+  }
   render() {
-    const { form, login } = this.props;
+    const { form } = this.props;
     const { getFieldDecorator } = form;
     const { count, type } = this.state;
     return ( 
@@ -129,3 +158,5 @@ export default class Login extends React.Component {
     )
   }
 }
+
+export default Login

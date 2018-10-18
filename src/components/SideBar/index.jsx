@@ -13,7 +13,25 @@ export default class SideBar extends React.Component {
     this.state = {
     }
   }
-  getCurrentMenuSelectKeys(props){
+  componentDidMount() {
+  }
+
+  getCurrentMenuSelectKeys(){
+    const { location: { pathname } } = this.props
+    // "/".split("/") = ["", ""]
+    const keys = pathname.split('/').filter(item => item !== '/').slice(1);
+    if (keys.length === 1 && keys[0] === '') {
+      return [this.menus[0].path];
+    }
+    return keys;
+  }
+  getCurrentOpenKeysNav(){
+    const { location: { pathname } } = this.props
+    const arr = pathname.split('/').filter(item => item !== '/')
+    if(arr.length >= 2) {
+      return [arr[arr.length - 2]]
+    }
+    return [this.menus[0].path]
   }
   getNavMenuItem(menuData, parentPath = '') {
     if(!menuData) {
@@ -74,6 +92,8 @@ export default class SideBar extends React.Component {
           <Menu
             theme="dark"
             mode="inline"
+            defaultOpenKeys={this.getCurrentOpenKeysNav()}
+            selectedKeys={this.getCurrentMenuSelectKeys()}
           >
           {
             this.getNavMenuItem(this.menus)

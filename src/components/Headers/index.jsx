@@ -12,11 +12,15 @@ export default class Headers extends React.Component {
     }
   }
   handleClick = ({ key }) => {
-    // 退出登录 解决方案  1.store middleware 捕获action history change
+    // 退出登录 解决方案  
+    // 1.store middleware 捕获action history change
+    // 2.直接操作 history  push(location)
     const { logout, history } = this.props
-    if (key === 'logout') {
+    if (key === 'logout') { 
+      //很多问题  action任何操作应该是异步
+      //push到登录页 应该把history、用户信息、状态清空
       logout()
-      history.push('/user/login')
+      // history.push('/user/login')
     }
   }
 
