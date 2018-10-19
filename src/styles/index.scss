@@ -1,4 +1,31 @@
 
 @import 'node_modules/normalize-scss/sass/normalize/_import-now.scss';
+// @import 'node_modules/normalize-scss/sass/_normalize.scss';
 
-@import 'container';
+/* 
+ * antd less transiton into  scss  and overwrite
+ */
+
+@import '../../theme.scss';
+
+/* 
+ * body overwrite
+ */
+
+@import 'app.scss';
+
+/*
+ * userLayput login register
+ */
+
+@import 'user.container';
+@import 'user.login';
+
+/*
+ *  basicLayout app-page 
+ */
+
+@import 'basic.container';
+@import 'basic.container.sidebar.scss';
+@import 'basic.container.headers.scss';
+@import 'basic.container.uploadpicture';

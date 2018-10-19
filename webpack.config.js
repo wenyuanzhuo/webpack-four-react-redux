@@ -4,6 +4,7 @@ const AddAssetHtmlWebpackPlugin = require("add-asset-html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const AntdScssThemePlugin = require('antd-scss-theme-plugin');
 const path = require('path');
 const config = {
   buildPath: path.resolve(`build/localhost`),
@@ -13,6 +14,12 @@ const dllPath = path.resolve('./dll')
 module.exports = (env, argv) => {
   console.log(`mode: ${argv.mode}`);
   return {
+    entry: {
+      app: path.resolve(__dirname, 'src/index.js'),
+    },
+    output: {
+      publicPath: '/',
+    },
     module: {
       rules: [
         {
@@ -62,20 +69,26 @@ module.exports = (env, argv) => {
             argv.mode === 'production' ? MiniCssExtractPlugin.loader: "style-loader",
             "css-loader",
             "postcss-loader",
-            {
+            AntdScssThemePlugin.themify({
               loader: 'sass-loader',
               options: {
                 // indentedSyntax: true, 
                 outputStyle: 'expanded',// nested嵌套 compact紧凑 compressed压缩 expanded延展
-                // includePaths: [
-                //   path.resolve(__dirname, 'node_modules')
-                // ]
               }
-            }
+            })
           ],
         },
         {
-          test: /\.(png|jpg|gif|woff|woff2)$/,
+          test: /\.less/,
+          use: [
+            argv.mode === 'production' ? MiniCssExtractPlugin.loader: "style-loader",
+            'css-loader',
+            'postcss-loader',
+            'less-loader',
+          ],
+        },
+        {
+          test: /\.(png|jpg|gif|woff|woff2|svg)$/,
           use: [
             {
               loader: 'url-loader',
@@ -132,6 +145,7 @@ module.exports = (env, argv) => {
         filename: "./index.html",
         chunksSortMode: 'none',
       }),
+      new AntdScssThemePlugin('./theme.scss'),
       ...(argv.mode === 'production') ?  [
         new CleanWebpackPlugin(['dist'], {
           root: path.resolve(__dirname, '.')
@@ -154,8 +168,24 @@ module.exports = (env, argv) => {
       historyApiFallback: true,
       hot: true,
       publicPath: '/',
-      port: 9000,
+      port: 8001,
       noInfo: false,
+      host: '0.0.0.0',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST',
+        'Access-Control-Allow-Credentials': true
+      },
+      proxy: {
+        "/api": {
+          target: "http://mock.videojj.com/mock/5b8ca8a2380a47002f43587e/example",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api': ''
+        }
+        }
+      }
     },
     devtool: argv.mode === 'production' ? 'source-map': 'eval-source-map',
     //source-map 整个 source map 作为一个单独的文件生成。它为 bundle 添加了一个引用注释，以便开发工具知道在哪里可以找到它
@@ -170,6 +200,11 @@ module.exports = (env, argv) => {
         styles: `${srcPath}/styles`,
         reducer: `${srcPath}/reducer`,
         action: `${srcPath}/action`,
+        layouts: `${srcPath}/layouts`,
+        common: `${srcPath}/common`,
+        routes: `${srcPath}/routes`,
+        assets: `${srcPath}/assets`,
+        utils: `${srcPath}/utils`
       }
     }
   }
