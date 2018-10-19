@@ -178,7 +178,7 @@ module.exports = (env, argv) => {
       },
       proxy: {
         "/api": {
-          target: "http://mock.videojj.com/mock/5b8ca8a2380a47002f43587e/example/image",
+          target: "http://mock.videojj.com/mock/5b8ca8a2380a47002f43587e/example",
           secure: false,
           changeOrigin: true,
           pathRewrite: {
