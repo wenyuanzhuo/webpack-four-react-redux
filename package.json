@@ -54,6 +54,7 @@
     "redux-thunk": "^2.3.0",
     "sass-loader": "webpack-contrib/sass-loader",
     "style-loader": "^0.23.0",
+    "tesseract.js": "^1.0.10",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "url-loader": "^1.1.1",
     "webpack": "^4.20.2",
@@ -61,6 +62,11 @@
     "webpack-dev-server": "^3.1.9"
   },
   "dependencies": {
+    "canvas": "^2.0.1",
+    "fs": "^0.0.1-security",
+    "koa": "^2.5.3",
+    "koa-bodyparser": "^4.2.1",
+    "ocrad.js": "^0.0.1",
     "whatwg-fetch": "^3.0.0"
   }
 }

@@ -15,6 +15,12 @@ const logout = store => next => (action) => {
   }
   return next(action)
 }
+const authConfirm = store => next => (action) => {
+/**
+ * 登录态鉴定 
+ */
+
+}
 const history = createBrowserHistory()
 const middlewares = [thunk]
 

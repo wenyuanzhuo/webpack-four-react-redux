@@ -1,8 +1,8 @@
 import React from 'react';
 import { Upload, Icon, message, Steps, Button } from 'antd';
-import { beforeUpload, getBase64 } from 'utils/upload'
+// import { getBase64 } from 'utils/upload'
 import 'whatwg-fetch'
-
+// const Tesseract = window.Tesseract
 const Step = Steps.Step;
 
 const steps = [{
@@ -15,7 +15,15 @@ const steps = [{
   title: '结果展示',
   content: 'result success',
 }];
-
+function getUrl(img) {
+  // const objecturl =  window.URL.createObjectURL(img);
+  // console.log(333,objecturl)
+}
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
 export default class UploadPicture extends React.Component {
   constructor(props) {
     super(props);
@@ -47,15 +55,24 @@ export default class UploadPicture extends React.Component {
       // return;
     }
     if (info.file.status === 'done') {
+      
+      // getUrl(info.file.originFileObj)
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => this.setState({
+      getBase64(info.file.originFileObj, imageUrl =>  {
+        fetch(`/img/${info.file.name}`)
+        this.setState({
         imageUrl,
         loading: false,
-      }));
+        })
+      });
     }
   }
   handleNextChange = () => {
-    const { current } = this.state
+    const { current, imageUrl } = this.state
+    // if (imageUrl) saveImg(imageUrl)
+    // fetch('/demo')
+    // .then(res => console.log(res))
+
       this.setState({
         current: 2
       })
@@ -67,7 +84,7 @@ export default class UploadPicture extends React.Component {
     })
   }
   render() {
-    const { current, imageUrl } = this.state;
+    const { current, imageUrl, imgResult } = this.state;
     const stepTitle = (
       <Steps current={current}>
         {steps.map(item => <Step key={item.title} title={item.title} />)}
@@ -95,7 +112,7 @@ export default class UploadPicture extends React.Component {
 
     const transResult = (
       <div className="transiton-result">
-        content
+         {imgResult ? <div>{imgResult}</div> : 'content'}
       </div>
     )
     const nextButton = (

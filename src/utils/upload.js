@@ -4,3 +4,10 @@ export function getBase64(img, callback) {
   reader.readAsDataURL(img);
 }
 
+// export function saveImg (url) {
+//   fs.writeFile('./assets/img.txt', url, function(err) {
+//     if (err) {
+//       throw err;
+//     }
+//   })
+// }

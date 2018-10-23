@@ -183,7 +183,23 @@ module.exports = (env, argv) => {
           changeOrigin: true,
           pathRewrite: {
             '^/api': ''
-        }
+          }
+        },
+        "/demo": {
+          target: "http://192.168.2.230:5000/demo",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/demo': ''
+          }
+        },
+        "/img": {
+          target: "http://192.168.199.183:3000/img",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/img': ''
+          }
         }
       }
     },
