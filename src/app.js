@@ -7,8 +7,18 @@ const path = require('path');
 const router = require('koa-router')();
 const bodyParser = require('koa-bodyparser');
 // 对于任何请求，app将调用该异步函数处理请求：
-router.get('/img/:name', async(ctx, next) => {
-    const url = ctx.params.name
+// router.get('/img/:name', async(ctx, next) => {
+//     const url = ctx.params.name
+//     console.log(url)
+//     fs.writeFile(path.resolve(__dirname, 'assets/img.txt'), url, function(err) {
+//         if (err) {
+//             throw err;
+//         }
+//     })
+//     next()
+// })
+router.post('/test', async(ctx, next) => {
+    const url = ctx.request.body
     console.log(url)
     fs.writeFile(path.resolve(__dirname, 'assets/img.txt'), url, function(err) {
         if (err) {

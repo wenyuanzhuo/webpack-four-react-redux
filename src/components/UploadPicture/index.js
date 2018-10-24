@@ -1,10 +1,11 @@
 import React from 'react';
-import { Upload, Icon, message, Steps, Button } from 'antd';
+import { Upload, Icon, message, Steps, Button, Card, Avatar } from 'antd';
 // import { getBase64 } from 'utils/upload'
 import 'whatwg-fetch'
+import { transImgResultInfo, tmp} from 'mock/index'
 // const Tesseract = window.Tesseract
 const Step = Steps.Step;
-
+const { Meta } = Card;
 const steps = [{
   title:'上传图片',
   content: 'upload',
@@ -16,8 +17,9 @@ const steps = [{
   content: 'result success',
 }];
 function getUrl(img) {
-  // const objecturl =  window.URL.createObjectURL(img);
-  // console.log(333,objecturl)
+  const objecturl =  window.URL.createObjectURL(img);
+  console.log(333,objecturl)
+  return objecturl
 }
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -30,6 +32,8 @@ export default class UploadPicture extends React.Component {
     this.state = {
       loading: false,
       current: 0,
+      show: false,
+      imgResult: [],
     };
   }
   static getDerivedStateFromProps(nextProps, preState) {
@@ -55,27 +59,47 @@ export default class UploadPicture extends React.Component {
       // return;
     }
     if (info.file.status === 'done') {
-      
-      // getUrl(info.file.originFileObj)
-      // Get this url from response in real world.
       getBase64(info.file.originFileObj, imageUrl =>  {
-        fetch(`/img/${info.file.name}`)
+        // fetch(`/img/${info.file.name}`)        
         this.setState({
         imageUrl,
         loading: false,
         })
       });
+      // const imgUrl = getUrl(info.file.originFileObj)
+      // fetch('/test', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({ url: imgUrl })
+      // })
+      // this.setState({
+      //   imageUrl: imgUrl,
+      //   loading: false,
+      // })
     }
+  }
+  _transResult (res) {
+    const ans = transImgResultInfo(res.data, tmp)
+    this.setState({
+      current: 2,
+      imgResult: ans
+    })
   }
   handleNextChange = () => {
     const { current, imageUrl } = this.state
-    // if (imageUrl) saveImg(imageUrl)
-    // fetch('/demo')
-    // .then(res => console.log(res))
+    
+    // fetch(`/demo/${imageUrl}`)
+    fetch('/api/example')
+    .then((res) => {
+      if(res.status >= 200 && res.status < 300) {
+        return res
+      }
+    })
+    .then(res => res.json())
+    .then(data => this._transResult(data))
 
-      this.setState({
-        current: 2
-      })
   }
   handleBack = () => {
     this.setState({
@@ -83,8 +107,15 @@ export default class UploadPicture extends React.Component {
       imageUrl: null
     })
   }
+  handleShowDetail = (e) => {
+    e.preventDefault();
+    this.setState((preState) => ({
+      show: !preState.show
+    }))
+  }
   render() {
-    const { current, imageUrl, imgResult } = this.state;
+    const { current, imageUrl, imgResult, show } = this.state;
+    console.log(111111,imgResult)
     const stepTitle = (
       <Steps current={current}>
         {steps.map(item => <Step key={item.title} title={item.title} />)}
@@ -103,26 +134,24 @@ export default class UploadPicture extends React.Component {
         className="avatar-uploader"
         showUploadList={false}
         action="/api/image"
-        beforeUpload={this.beforeUpload}
         onChange={this.handleChange}
       >
         {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
       </Upload>
     );
-
-    const transResult = (
-      <div className="transiton-result">
-         {imgResult ? <div>{imgResult}</div> : 'content'}
-      </div>
-    )
     const nextButton = (
       <div className="next">
-        <Button
-          type="primary"
-          onClick={this.handleNextChange}
-        >
-          解析图片
-        </Button>
+        {
+           current === 1 &&
+           (
+            <Button
+              type="primary"
+              onClick={this.handleNextChange}
+            >
+              解析图片
+            </Button>
+           )
+        }
         {
           current === 2 &&
           (
@@ -134,6 +163,43 @@ export default class UploadPicture extends React.Component {
               返回
             </Button>
           )
+        }
+      </div>
+    )
+    const transResult = (
+      <div className="transiton-result">
+        { imgResult && 
+         (<Card
+            style={{ width: '100%', height: 300 }}
+            cover={<img alt="example" src={imageUrl}/>}
+            actions={[<div onClick={this.handleShowDetail}><Icon type="setting" /><span>身份证原始信息</span></div>]}
+          >
+            { imgResult && imgResult.map((item, index) => {
+                if (item.id !== 'original_information') {
+                  return (
+                    <div key={item.index} className="trans-detail">
+                      <span>{item.id}</span>
+                      <span>:</span>
+                      <span>{item.value}</span>
+                    </div>
+                  )
+                }
+              })
+            }
+            {
+              show && imgResult && imgResult.map((item, index) => {
+                if (item.id === 'original_information') {
+                  return (
+                    <div key={item.index}>
+                      <span>{item.id}</span>
+                      <span>:</span>
+                      <span>{item.value}</span>
+                    </div>
+                  )
+                }
+              })
+            }
+          </Card>)
         }
       </div>
     )
