@@ -104,7 +104,8 @@ export default class UploadPicture extends React.Component {
   handleBack = () => {
     this.setState({
       current: 0,
-      imageUrl: null
+      imageUrl: null,
+      show: false
     })
   }
   handleShowDetail = (e) => {
