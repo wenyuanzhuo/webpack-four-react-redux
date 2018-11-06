@@ -23,7 +23,14 @@ export const tmp = {
   "nationality": "民族",
   "original_information": "original_information"
 }
-
+export const tmp2 = {
+  "name": "姓名",
+  "sex": "性别",
+  "birthday": "出生",
+  "identification": "公民身份号码",
+  "address": "住址",
+  "nationality": "民族",
+}
 export const transImgResultInfo = (peopleDetail, tmp) => {
   const tmps = {}
   const arr = []

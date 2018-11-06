@@ -1,0 +1,20 @@
+.basic-container-uploadpicturelist {
+  .ant-upload-list {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .upload-list-inline .ant-upload-list-item {
+    width: 200px;
+    margin-right: 8px;
+  }
+  .main-content {
+    margin-top: 100px;
+    .cover-img {
+      min-height: 250px;
+    }
+    .trans-detail {
+      height: 30px;
+      font-weight: 500;
+    }
+  }
+}
