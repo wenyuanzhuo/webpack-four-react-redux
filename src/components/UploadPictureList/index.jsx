@@ -1,11 +1,11 @@
 import React from 'react'
-import { Upload, Icon, Button, Card, Row, Col} from 'antd'
+import { Upload, Icon, Button, Card, Row, Col, Spin} from 'antd'
 import 'whatwg-fetch'
 import _ from 'lodash'
 
 import { fromPrefixLen } from 'ip';
 import { getUrl, uuid } from 'utils/upload'
-import { transImgResultInfo, tmp2} from 'mock/index'
+import { transImgResultInfo, tmp2, tmp} from 'mock/index'
 export default class UploadPictureList extends React.Component {
   constructor(props) {
     super(props);
@@ -14,12 +14,25 @@ export default class UploadPictureList extends React.Component {
       fileList: [],
       imgResult: [],
       cardList: [],
-      original_information: ','
+      original_information: '',
+      loading: false,
     };
   }
   _transResult (res) {
     // const ans = transImgResultInfo(res.data, tmp)
     // cardList
+    if(_.includes(Object.keys(res.data), 'name')) {
+      const ans = transImgResultInfo(res.data, tmp)
+      const result = [{
+        data: ans,
+        name: res.data.name
+      }]
+      this.setState({
+        cardList: result,
+        original_information: res.data.original_information
+      })
+      return 
+    }
     const arr = Object.keys(res.data)
     const o = []
     let original_information = ''
@@ -33,6 +46,7 @@ export default class UploadPictureList extends React.Component {
         original_information = res.data[item]
       }
     })
+    console.log(o)
     const result = _.map(o, item => {
       item.data = transImgResultInfo(item.data, tmp2)
       return item
@@ -42,6 +56,24 @@ export default class UploadPictureList extends React.Component {
       original_information,
     })
   }
+  onResolve = (e) => {
+    e.preventDefault
+    this.setState({
+      loading: true,
+    })
+    // fetch(`/demo?name=${info.fileList.name}`)
+    fetch('/api/example')
+    .then((res) => {
+      if(res.status >= 200 && res.status < 300) {
+        this.setState({
+          loading: false,
+        })
+        return res
+      }
+    })
+    .then(res => res.json())
+    .then(data => this._transResult(data))
+  }
   handleChange = (info) => {
     console.log(info)
     if (info.file.status === 'removed') {
@@ -49,20 +81,21 @@ export default class UploadPictureList extends React.Component {
         fileList: [
           ...info.fileList
         ],
+        cardList: []
       })
     } else {
       const imgViewUrl = getUrl(info.file.originFileObj)
       const len = info.fileList.length
       info.fileList[len - 1].thumbUrl = imgViewUrl
-      // fetch(`/demo?name=${info.fileList.name}`)
-      fetch('/api/example')
-      .then((res) => {
-        if(res.status >= 200 && res.status < 300) {
-          return res
-        }
-      })
-      .then(res => res.json())
-      .then(data => this._transResult(data))
+      // // fetch(`/demo?name=${info.fileList.name}`)
+      // fetch('/api/example')
+      // .then((res) => {
+      //   if(res.status >= 200 && res.status < 300) {
+      //     return res
+      //   }
+      // })
+      // .then(res => res.json())
+      // .then(data => this._transResult(data))
       this.setState((perState) => ({
         fileList: [
           ...info.fileList
@@ -84,9 +117,14 @@ export default class UploadPictureList extends React.Component {
       </Button>
     )
     const resolveButton = (
-      <Button>
-        <Icon type="zoom-in" /> 解析
-      </Button>
+     <div className="position-btn">
+        <Button
+          onClick={this.onResolve}
+          type="primary"
+        >
+          <Icon type="zoom-in" /> 解析
+        </Button>
+     </div>
     )
     const card = (img, name, data) => (
       <Col span={12}>
@@ -115,13 +153,18 @@ export default class UploadPictureList extends React.Component {
           onChange={this.handleChange}
           fileList={fileList}
         >
-          { fileList.length >= 1 ? resolveButton : uploadButton}
+          { fileList.length < 1 && uploadButton}
         </Upload>
-        <div className="main-content">
-          <Row gutter={24}>
-            { cardList && cardList.map(item => card(fileList[0].thumbUrl,item.name, item.data))}
-          </Row>
-        </div>
+        { fileList.length >= 1 && resolveButton }
+        <Spin
+          spinning={this.state.loading}
+        >
+          <div className="main-content">
+            <Row gutter={24}>
+              { cardList && cardList.map(item => card(fileList[0].thumbUrl,item.name, item.data))}
+            </Row>
+          </div>
+        </Spin>
       </div>
     )
   }

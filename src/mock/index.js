@@ -35,9 +35,10 @@ export const transImgResultInfo = (peopleDetail, tmp) => {
   const tmps = {}
   const arr = []
   for (const item in peopleDetail) {
-    const newKey = tmp[item]
-    tmps[newKey] = peopleDetail[item]
-
+    if(item !== 'original_information') {
+      const newKey = tmp[item]
+      tmps[newKey] = peopleDetail[item]
+    }
   }
   for(const key in tmps) {
     arr.push({
