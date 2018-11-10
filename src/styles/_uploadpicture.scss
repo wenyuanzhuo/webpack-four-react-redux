@@ -21,10 +21,16 @@
     img {
       height: 400px;
     }
+    .transiton-result {
+      .trans-detail {
+        height: 30px;
+        font-weight: 500;
+      }
+    }
   }
   .next {
     position: absolute;
-    top: 580px;
+    top: 780px;
     left: 50%;
     transform: translate(-50%);
   }

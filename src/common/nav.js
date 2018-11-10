@@ -68,6 +68,12 @@ export const getNavData = [
         icon: 'upload',
         path: 'uploadpicture',
         component: createLoadable(() => import('components/UploadPicture'))
+      },
+      {
+        name: '图片批量上传',
+        icon: 'upload',
+        path: 'uploadpictureList',
+        component: createLoadable(() => import('components/UploadPictureList'))
       }
     ]
   }

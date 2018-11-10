@@ -177,14 +177,38 @@ module.exports = (env, argv) => {
         'Access-Control-Allow-Credentials': true
       },
       proxy: {
-        "/api": {
+        "/api": { // mock
           target: "http://mock.videojj.com/mock/5b8ca8a2380a47002f43587e/example",
           secure: false,
           changeOrigin: true,
           pathRewrite: {
             '^/api': ''
-        }
-        }
+          }
+        },
+        "/demo": {//python server
+          target: "http://192.168.2.230:5000/demo",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/demo': ''
+          }
+        },
+        "/img": {// get
+          target: "http://localhost:3000/img",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/img': ''
+          }
+        },
+        "/test": {// post test
+          target: "http://localhost:3000/test",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^/test': ''
+          }
+        },
       }
     },
     devtool: argv.mode === 'production' ? 'source-map': 'eval-source-map',
@@ -204,7 +228,8 @@ module.exports = (env, argv) => {
         common: `${srcPath}/common`,
         routes: `${srcPath}/routes`,
         assets: `${srcPath}/assets`,
-        utils: `${srcPath}/utils`
+        utils: `${srcPath}/utils`,
+        mock: `${srcPath}/mock`,
       }
     }
   }
