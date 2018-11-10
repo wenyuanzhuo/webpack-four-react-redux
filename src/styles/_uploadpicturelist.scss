@@ -9,16 +9,22 @@
   }
   .position-btn {
     margin-top: 20px;
-
+  }
+  .ant-card-body {
+    min-height: 300px;
   }
   .main-content {
-    margin-top: 100px;
+    margin-top: 50px;
     .cover-img {
       min-height: 250px;
     }
     .trans-detail {
-      height: 30px;
+      height: 40px;
       font-weight: 500;
+    }
+    .trans-detail-origin {
+      font-size: 14px;
+      font-weight: 600;
     }
   }
 }

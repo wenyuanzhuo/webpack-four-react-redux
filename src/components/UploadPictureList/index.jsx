@@ -2,10 +2,11 @@ import React from 'react'
 import { Upload, Icon, Button, Card, Row, Col, Spin} from 'antd'
 import 'whatwg-fetch'
 import _ from 'lodash'
-
+// import ajax from 'ajax'
 import { fromPrefixLen } from 'ip';
 import { getUrl, uuid } from 'utils/upload'
 import { transImgResultInfo, tmp2, tmp} from 'mock/index'
+import qs from 'querystring'
 export default class UploadPictureList extends React.Component {
   constructor(props) {
     super(props);
@@ -16,34 +17,36 @@ export default class UploadPictureList extends React.Component {
       cardList: [],
       original_information: '',
       loading: false,
+      show: false,
     };
   }
   _transResult (res) {
     // const ans = transImgResultInfo(res.data, tmp)
     // cardList
-    if(_.includes(Object.keys(res.data), 'name')) {
-      const ans = transImgResultInfo(res.data, tmp)
+    console.log(res)
+    if(_.includes(Object.keys(res), 'name')) {
+      const ans = transImgResultInfo(res, tmp)
       const result = [{
         data: ans,
-        name: res.data.name
+        name: res.name
       }]
       this.setState({
         cardList: result,
-        original_information: res.data.original_information
+        original_information: res.original_information
       })
       return 
     }
-    const arr = Object.keys(res.data)
+    const arr = Object.keys(res)
     const o = []
     let original_information = ''
     _.forEach(arr, item => {
       if (item !== 'original_information') {
         o.push({
-          name: res.data[item].name,
-          data: res.data[item]
+          name: res[item].name,
+          data: res[item]
         })
       } else {
-        original_information = res.data[item]
+        original_information = res[item]
       }
     })
     console.log(o)
@@ -61,15 +64,17 @@ export default class UploadPictureList extends React.Component {
     this.setState({
       loading: true,
     })
-    // fetch(`/demo?name=${info.fileList.name}`)
-    fetch('/api/example')
+    console.log(this.state.fileList[0].name)
+    let params = {
+      "name": this.state.fileList[0].name,
+    }
+    
+    fetch(`/demo?${qs.stringify(params)}`)
     .then((res) => {
-      if(res.status >= 200 && res.status < 300) {
-        this.setState({
-          loading: false,
-        })
-        return res
-      }
+      this.setState({
+        loading: false,
+      })
+      return res
     })
     .then(res => res.json())
     .then(data => this._transResult(data))
@@ -81,21 +86,13 @@ export default class UploadPictureList extends React.Component {
         fileList: [
           ...info.fileList
         ],
-        cardList: []
+        cardList: [],
+        show: false,
       })
     } else {
       const imgViewUrl = getUrl(info.file.originFileObj)
       const len = info.fileList.length
       info.fileList[len - 1].thumbUrl = imgViewUrl
-      // // fetch(`/demo?name=${info.fileList.name}`)
-      // fetch('/api/example')
-      // .then((res) => {
-      //   if(res.status >= 200 && res.status < 300) {
-      //     return res
-      //   }
-      // })
-      // .then(res => res.json())
-      // .then(data => this._transResult(data))
       this.setState((perState) => ({
         fileList: [
           ...info.fileList
@@ -104,8 +101,14 @@ export default class UploadPictureList extends React.Component {
     }
 
   }
+  handleShowDetail = (e) => {
+    e.preventDefault();
+    this.setState((preState) => ({
+      show: !preState.show
+    }))
+  }
   render() {
-    const { fileList, cardList } = this.state
+    const { fileList, cardList, original_information, show } = this.state
     const props = {
       action: 'api/image',
       listType: 'picture',
@@ -131,6 +134,7 @@ export default class UploadPictureList extends React.Component {
         <Card 
           cover={<img alt='example' src={img}/>}
           bordered={false}
+          actions={[<div onClick={this.handleShowDetail}><Icon type="setting" /><span>身份证原始信息</span></div>]}
         >
           { data && data.map((item, index) => {
             return (
@@ -141,6 +145,16 @@ export default class UploadPictureList extends React.Component {
               </div>
             )
           })}
+          {
+            show && original_information && 
+              (
+                <div className="trans-detail-origin">
+                  <span>原始信息</span>
+                  <span>:</span>
+                  <span>{original_information.join(', ')}</span>
+                </div>
+              )
+            }
         </Card>
       </Col>
     )
