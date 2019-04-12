@@ -74,7 +74,20 @@ export const getNavData = [
         icon: 'upload',
         path: 'uploadpictureList',
         component: createLoadable(() => import('components/UploadPictureList'))
-      }
+      },
+      {
+        name: 'rxjs',
+        icon: 'dashboard',
+        path: 'rxjs',
+        children: [
+          {
+            name: '学习1',
+            icon: 'dashboard',
+            path: 'studyone',
+            component: createLoadable(() => import('components/RxStudy/One'))
+          }
+        ]
+      },
     ]
   }
 ]
