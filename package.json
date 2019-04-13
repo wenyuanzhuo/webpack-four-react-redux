@@ -24,6 +24,7 @@
     "antd-scss-theme-plugin": "^1.0.7",
     "autoprefixer": "^9.1.5",
     "babel-loader": "^8.0.2",
+    "babel-plugin-emotion": "^10.0.9",
     "babel-plugin-import": "^1.9.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",
@@ -62,12 +63,16 @@
     "webpack-dev-server": "^3.1.9"
   },
   "dependencies": {
+    "@emotion/babel-preset-css-prop": "^10.0.9",
+    "@emotion/core": "^10.0.10",
+    "@emotion/styled": "^10.0.10",
     "canvas": "^2.0.1",
     "fs": "^0.0.1-security",
     "koa": "^2.5.3",
     "koa-bodyparser": "^4.2.1",
     "ocrad.js": "^0.0.1",
     "rxjs": "^6.4.0",
+    "rxjs-hooks": "^0.4.2",
     "whatwg-fetch": "^3.0.0"
   }
 }

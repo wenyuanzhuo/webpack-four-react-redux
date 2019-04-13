@@ -1,5 +1,12 @@
 {
   "presets": [
+    [
+      "@emotion/babel-preset-css-prop",
+      {
+        "autoLabel": true,
+        "labelFormat": "[local]"
+      }
+    ],
     "@babel/preset-react",
     "@babel/preset-env"
   ],
