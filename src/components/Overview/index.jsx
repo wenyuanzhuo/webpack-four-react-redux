@@ -2,13 +2,23 @@
 import React, { useState, Fragment } from 'react';
 import { jsx, css } from '@emotion/core';
 import styled from '@emotion/styled'
-import { interval, timer } from 'rxjs';
-import { tap, takeWhile, map, combineLatest, withLatestFrom } from 'rxjs/operators'
+import { interval, timer, fromEvent } from 'rxjs';
+import { tap, takeWhile, map, combineLatest, withLatestFrom, filter, debounceTime } from 'rxjs/operators'
 import { useObservable, useEventCallback } from 'rxjs-hooks'
 export default class Overview extends React.Component {
-  
+  constructor(props) {
+    super(props)
+
+    this.scrollbtn = React.createRef()
+    this.scrollTop = React.createRef()
+    this.docEle = document.documentElement
+  }
+  componentDidMount() {
+    // this.scrollbtn.current.style.opacity = 0
+  }
   render() {
     const style = css`
+      height: 6000px;
     `
     const Button = styled.button`
       line-height: 1.499;
@@ -38,8 +48,28 @@ export default class Overview extends React.Component {
       }
       margin: 0 20px 20px 0;
     `
+    const ScrollBtn = styled.span`
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      width: 0;
+      height: 0;
+      border-bottom: 60px solid #409EFF;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-top: 30px solid transparent;
+    `
+    const ScrollTopVal = styled('span')`
+      position: fixed;
+      left: 220px;
+      bottom: 20px;
+      margin-bottom: 20px;
+      width: 20px;
+      height: 20px;
+    `
     const SomeComponent = ({children}) => {
-      // const { b, setB } = useState(0)
       return (
         <div
           css={style} 
@@ -103,10 +133,30 @@ export default class Overview extends React.Component {
       );
     }
 
+    const ScrollToTop = () => {
+      // const scrollFadeIn$ = fromEvent(window, 'scroll').pipe(
+      //   debounceTime(16.7),
+      //   filter(() => this.docEle.scrollTop >= 100),
+      //   map(() => ({ y: this.docEle.scrollTop })),
+      //   tap(() => {
+      //     this.scrollTop.current.innerHTMl = `${this.docEle.scrollTop}`
+      //   })
+      // )
+      // scrollFadeIn$.subscribe()
+      // useObservable(() => scrollFadeIn$)
+      
+      return (
+        <Fragment>
+          <ScrollBtn ref={this.scrollbtn}></ScrollBtn>
+          <ScrollTopVal ref={this.scrollTop}></ScrollTopVal>
+        </Fragment>
+      )
+    }
     return (
       <SomeComponent>
         <AnotherComponent/>
         <Timer/>
+        <ScrollToTop/>
       </SomeComponent>
     )
   }
