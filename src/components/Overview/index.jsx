@@ -2,19 +2,50 @@
 import React, { useState, Fragment } from 'react';
 import { jsx, css } from '@emotion/core';
 import styled from '@emotion/styled'
-import { interval, timer, fromEvent } from 'rxjs';
-import { tap, takeWhile, map, combineLatest, withLatestFrom, filter, debounceTime } from 'rxjs/operators'
+import { interval, timer, fromEvent, Scheduler, never } from 'rxjs';
+import { tap, takeWhile, map, combineLatest, withLatestFrom, filter, debounceTime, scan, repeat, startWith, mergeMap } from 'rxjs/operators'
 import { useObservable, useEventCallback } from 'rxjs-hooks'
 export default class Overview extends React.Component {
   constructor(props) {
     super(props)
-
+    this.state = {
+      visibleBtnCss: false,
+    }
     this.scrollbtn = React.createRef()
     this.scrollTop = React.createRef()
     this.docEle = document.documentElement
+    this.currentEle = document.body.children[0].children[0].children[1]
   }
   componentDidMount() {
-    // this.scrollbtn.current.style.opacity = 0
+    this.scrollbtn.current.style.opacity = 0
+  }
+  lerp = (start, end) => {
+    var y = start.y + end
+    return { y }
+  }
+  backScrollTop = () => {
+    this.setState({
+      visibleBtnCss: true,
+    })
+    let timer
+    let fn = () => {
+      const top = this.currentEle.scrollTop
+      if (top > 0) {
+        this.currentEle.scrollTop = top - 100
+        timer = requestAnimationFrame(fn)
+      } else {
+        cancelAnimationFrame(timer)
+      }
+    }
+    requestAnimationFrame(fn)
+  }
+  addclass = () => {
+    
+  }
+  removeClass = () => {
+    this.setState({
+      visibleBtnCss: false,
+    })
   }
   render() {
     const style = css`
@@ -68,6 +99,9 @@ export default class Overview extends React.Component {
       margin-bottom: 20px;
       width: 20px;
       height: 20px;
+    `
+    const backing = css`
+      border-bottom: 60px solid #e74c3c;
     `
     const SomeComponent = ({children}) => {
       return (
@@ -134,21 +168,73 @@ export default class Overview extends React.Component {
     }
 
     const ScrollToTop = () => {
-      // const scrollFadeIn$ = fromEvent(window, 'scroll').pipe(
-      //   debounceTime(16.7),
-      //   filter(() => this.docEle.scrollTop >= 100),
-      //   map(() => ({ y: this.docEle.scrollTop })),
-      //   tap(() => {
-      //     this.scrollTop.current.innerHTMl = `${this.docEle.scrollTop}`
-      //   })
-      // )
-      // scrollFadeIn$.subscribe()
-      // useObservable(() => scrollFadeIn$)
-      
+
+      const ScrollFadeIn$ = fromEvent(this.currentEle, 'scroll').pipe(
+        debounceTime(16.7),
+        filter(() => this.currentEle.scrollTop >= 100),
+        map(() => ({y: this.currentEle.scrollTop})),
+        tap(() => {
+          this.scrollTop.current.innerHTMl = `${this.currentEle.scrollTop}`
+        })
+      )
+      const ScrollFadeOut$ = fromEvent(this.currentEle, 'scroll').pipe(
+        debounceTime(16.7),
+        filter(() => this.currentEle.scrollTop <= 100),
+        map(() => ({y: this.currentEle.scrollTop})),
+        tap(() => {
+          this.scrollTop.current.innerHTMl = `${this.currentEle.scrollTop}`
+        })
+      )
+      const animationFrame$ = interval(50, Scheduler.animationFrame);
+      const animationFrameOut$ = interval(0, Scheduler.animationFrame).pipe(startWith(100));
+      const fadeIn$ = animationFrame$.pipe(
+        withLatestFrom(ScrollFadeIn$, (frame, moveY) => { 
+          return moveY
+        }),
+        scan((current, next) => this.lerp(current, 10)),
+        map((move) => {
+            if (move.y >= 100) {
+              this.scrollbtn.current.style.opacity = (move.y - 100)/ 100
+            }
+            return move.y
+        }),
+        takeWhile(n => n <= 200),
+        repeat()
+      )
+      const fadeOut$ = animationFrameOut$.pipe(
+        withLatestFrom(ScrollFadeOut$, (frame, moveY) => { 
+          return moveY
+        }),
+        scan((current, next) => this.lerp(current, -1)),
+        map((move) => {
+            console.log(move)
+            if (move.y <= 100 && move.y >= 0) {
+              this.scrollbtn.current.style.opacity  = move.y/ 100
+            }
+            return move.y
+        }),
+        tap((n) => { 
+            console.log(n)
+            if(n <= 0) {
+                this.removeClass()
+            }
+        }),
+        takeWhile(n => n >= 0)
+      )
+      const fadeInVal = useObservable(() => fadeIn$)
+      const [ handleClick ] = useEventCallback((event$) => 
+        event$.pipe(
+          map(this.backScrollTop),
+        ),
+      )
+      let fadeOutVal
+      if (this.state.visibleBtnCss) {
+        fadeOutVal = useObservable(() => fadeOut$)
+      }
       return (
         <Fragment>
-          <ScrollBtn ref={this.scrollbtn}></ScrollBtn>
-          <ScrollTopVal ref={this.scrollTop}></ScrollTopVal>
+          <ScrollBtn ref={this.scrollbtn} onClick={handleClick} css={this.state.visibleBtnCss ? backing: ''}></ScrollBtn>
+          <ScrollTopVal ref={this.scrollTop}>{!this.state.visibleBtnCss ? fadeInVal: fadeOutVal}</ScrollTopVal>
         </Fragment>
       )
     }
