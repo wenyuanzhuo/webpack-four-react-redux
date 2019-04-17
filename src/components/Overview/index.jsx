@@ -186,7 +186,7 @@ export default class Overview extends React.Component {
         })
       )
       const animationFrame$ = interval(50, Scheduler.animationFrame);
-      const animationFrameOut$ = interval(0, Scheduler.animationFrame).pipe(startWith(100));
+      const animationFrameOut$ = interval(50, Scheduler.animationFrame).pipe(startWith(100));
       const fadeIn$ = animationFrame$.pipe(
         withLatestFrom(ScrollFadeIn$, (frame, moveY) => { 
           return moveY
@@ -207,30 +207,27 @@ export default class Overview extends React.Component {
         }),
         scan((current, next) => this.lerp(current, -1)),
         map((move) => {
-            console.log(move)
-            if (move.y <= 100 && move.y >= 0) {
-              this.scrollbtn.current.style.opacity  = move.y/ 100
-            }
             return move.y
         }),
         tap((n) => { 
-            console.log(n)
             if(n <= 0) {
                 this.removeClass()
+                this.scrollbtn.current.style.opacity = 0
             }
         }),
         takeWhile(n => n >= 0)
       )
-      const fadeInVal = useObservable(() => fadeIn$)
+      let fadeOutVal, fadeInVal
+      if (this.state.visibleBtnCss) {
+        fadeOutVal = useObservable(() => fadeOut$)
+      } else {
+        fadeInVal = useObservable(() => fadeIn$)
+      }
       const [ handleClick ] = useEventCallback((event$) => 
         event$.pipe(
           map(this.backScrollTop),
         ),
       )
-      let fadeOutVal
-      if (this.state.visibleBtnCss) {
-        fadeOutVal = useObservable(() => fadeOut$)
-      }
       return (
         <Fragment>
           <ScrollBtn ref={this.scrollbtn} onClick={handleClick} css={this.state.visibleBtnCss ? backing: ''}></ScrollBtn>
