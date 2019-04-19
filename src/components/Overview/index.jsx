@@ -2,8 +2,8 @@
 import React, { useState, Fragment } from 'react';
 import { jsx, css } from '@emotion/core';
 import styled from '@emotion/styled'
-import { interval, timer, fromEvent, Scheduler, never } from 'rxjs';
-import { tap, takeWhile, map, combineLatest, withLatestFrom, filter, debounceTime, scan, repeat, startWith, mergeMap } from 'rxjs/operators'
+import { interval, timer, fromEvent, Scheduler } from 'rxjs';
+import { tap, takeWhile, map, combineLatest, withLatestFrom, filter, debounceTime, scan, repeat, startWith } from 'rxjs/operators'
 import { useObservable, useEventCallback } from 'rxjs-hooks'
 export default class Overview extends React.Component {
   constructor(props) {
@@ -35,6 +35,7 @@ export default class Overview extends React.Component {
         timer = requestAnimationFrame(fn)
       } else {
         cancelAnimationFrame(timer)
+        return
       }
     }
     requestAnimationFrame(fn)
@@ -78,6 +79,18 @@ export default class Overview extends React.Component {
         outline: 0;
       }
       margin: 0 20px 20px 0;
+      ${props => props.primary &&
+        css`
+          background-color: #1890ff;
+          border-color: #1890ff;
+          color: #fff;
+          &:hover, &:active, &:focus  {
+            color: #fff;
+            background-color: #40a9ff;
+            border-color: #40a9ff;
+          }
+        `
+      }
     `
     const ScrollBtn = styled.span`
       position: fixed;
@@ -160,7 +173,7 @@ export default class Overview extends React.Component {
     
       return (
         <div>
-          <Button onClick={() => setA(a + 100)}>a: +100</Button>
+          <Button primary onClick={() => setA(a + 100)}>a: +100</Button>
           <Button onClick={() => setB(b + 10)}>b: +10</Button>
           <span>{val}</span>
         </div>
@@ -225,7 +238,7 @@ export default class Overview extends React.Component {
       }
       const [ handleClick ] = useEventCallback((event$) => 
         event$.pipe(
-          map(this.backScrollTop),
+          map(this.backScrollTop)
         ),
       )
       return (
