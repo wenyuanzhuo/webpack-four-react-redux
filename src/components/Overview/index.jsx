@@ -40,9 +40,6 @@ export default class Overview extends React.Component {
     }
     requestAnimationFrame(fn)
   }
-  addclass = () => {
-    
-  }
   removeClass = () => {
     this.setState({
       visibleBtnCss: false,
