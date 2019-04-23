@@ -1,3 +1,7 @@
+import {  Subject } from 'rxjs'
+import { message } from 'antd';
+
+const subject = new Subject()
 export function getBase64(img, callback) {
   const reader = new FileReader();
   reader.addEventListener('load', () => callback(reader.result));
@@ -25,4 +29,10 @@ export const uuid =  () => {
       .substring(1)
   }
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+}
+
+export const messageService = {
+  sendMessage: message => subject.next({ text: message }),
+  clearMessages: () => subject.next(),
+  getMessage: () => subject.asObservable()
 }
