@@ -1,4 +1,6 @@
-import { Button } from './Button.jsx' 
+import { Button, Button1 } from './Button.jsx'
+
 export default {
-  Button
+  Button,
+  Button1
 }
