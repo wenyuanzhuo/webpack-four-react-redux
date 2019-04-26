@@ -30,6 +30,13 @@ module.exports = (env, argv) => {
           }
         },
         {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "awesome-typescript-loader"
+          }
+        },
+        {
           test: /\.html$/,
           use: {
             loader: "html-loader",
@@ -211,12 +218,12 @@ module.exports = (env, argv) => {
         },
       }
     },
-    devtool: argv.mode === 'production' ? 'source-map': 'eval-source-map',
+    devtool: argv.mode === 'production' ? 'source-map': 'inline-source-map',
     //source-map 整个 source map 作为一个单独的文件生成。它为 bundle 添加了一个引用注释，以便开发工具知道在哪里可以找到它
-    //eval-source-map 开发环境的最佳品质的 source map  首次构建较慢 重新构建较快 映射原始代码 同时反映正常行数
+    //eval-source-map 开发环境的最佳品质的 source map  首次构建较慢 重新构建较快 映射原始代码 同时反映正常行数 但是不利于调试
     resolve: {
       modules: [srcPath, 'node_modules'],
-      extensions: ['.js', '.jsx'],
+      extensions: ['.js', '.jsx', 'ts', 'tsx', 'json'],
       alias: {
         src: srcPath,
         components: `${srcPath}/components`,
