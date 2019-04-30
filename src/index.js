@@ -8,7 +8,7 @@ import 'styles/index.scss'
 import App from 'container/App'
 
 const render = App => {
-  ReactDOM.render(
+  ReactDOM.hydrate(
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <App/>
