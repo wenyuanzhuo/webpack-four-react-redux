@@ -88,6 +88,19 @@ export const getNavData = [
           }
         ]
       },
+      {
+        name: 'react-spring',
+        icon: 'dashboard',
+        path: 'spring',
+        children: [
+          {
+            name: 'demo',
+            icon: '',
+            path: 'one',
+            component: createLoadable(() => import('components/Spring/demo'))
+          }
+        ]
+      },
     ]
   }
 ]
