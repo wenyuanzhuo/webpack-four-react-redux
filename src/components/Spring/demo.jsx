@@ -1,6 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 // import { useSpring, animated } from 'react-spring'
-import { Keyframes, animated } from 'react-spring/renderprops'
+import { Keyframes, animated, config } from 'react-spring/renderprops'
 
 const Container = Keyframes.Spring(async next => {
   while (true) {
@@ -12,7 +12,7 @@ const Container = Keyframes.Spring(async next => {
 })
 export default class Demo11 extends React.PureComponent {
   state = {
-    items: [ 'item1', 'item2', 'item3' ]
+    items: [ 'item1', 'item2', 'item3', 'item1', 'item2' ]
   }
   render() {
     const Content = ({ radians, color }) =>
@@ -34,13 +34,17 @@ export default class Demo11 extends React.PureComponent {
         </animated.svg>
       ))
     const { items } = this.state
-    return <Container
-      reset
-      native
-      keys={items}
-      config={{ duration: 2000 }}
-    >
-      {Content}
-    </Container>
+    return (
+      <div style={{ overflow: 'hidden' }}>
+          <Container
+            reset
+            native
+            keys={items}
+            config={{ duration: 2000 }}
+          >
+            {Content}
+          </Container>
+      </div>
+    )
   }
 }
