@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Spin, Breadcrumb } from 'antd';
 import { Switch, Route, withRouter } from 'react-router-dom';
+import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
 import SideBar from 'common/SideBar';
 import Headers from 'common/Headers';
@@ -32,20 +33,21 @@ class BasicLayout extends Component {
           <div className="app-page">
             <Content style={{ margin: '24px 24px 0', height: '100%'}}>
               {
-                <Switch>
-                   {
-                     getRouteData('BasicLayout').map(item => 
-                      (
-                        <Route
-                          exact={item.exact}
-                          key={item.path}
-                          path={item.path}
-                          component={item.component}
-                        />
-                      )              
-                    )
-                   }
-                </Switch>
+                renderRoutes(getRouteData('BasicLayout'))
+                // <Switch>
+                //    {
+                //      getRouteData('BasicLayout').map(item => 
+                //       (
+                //         <Route
+                //           exact={item.exact}
+                //           key={item.path}
+                //           path={item.path}
+                //           component={item.component}
+                //         />
+                //       )              
+                //     )
+                //    }
+                // </Switch>
               }
             </Content>
           </div>

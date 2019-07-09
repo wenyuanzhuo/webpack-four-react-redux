@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Icon } from 'antd';
 import { Link, Route, Switch } from 'react-router-dom';
-
+import { renderRoutes } from 'react-router-config'
 
 class UserLayout extends Component {
   render() {
@@ -17,7 +17,10 @@ class UserLayout extends Component {
           </div>
           <div className="desc">react 16.5 webpack 4.0 redux react-router 4.0</div>
         </div>
-        <Switch>
+        {
+          renderRoutes(getRouteData('UserLayout'))
+        }
+        {/* <Switch>
           {
             getRouteData('UserLayout').map(item => 
               (
@@ -30,7 +33,7 @@ class UserLayout extends Component {
               )              
             )
           }
-        </Switch>
+        </Switch> */}
       </div>
     )
   }
