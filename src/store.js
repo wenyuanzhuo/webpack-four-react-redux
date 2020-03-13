@@ -36,12 +36,10 @@ const logger = createLogger({
   actionTransformer: tojsTransformer,
 })
 
-middlewares.push(logger)
-
-
 middlewares.push(
-  routerMiddleware(history),
   logout,
+  routerMiddleware(history),
+  logger
 )
 const store = createStore(
   connectRouter(history)(rootReducer), // new root reducer with router state

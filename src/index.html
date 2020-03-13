@@ -7,5 +7,13 @@
 <body>
     <div id="app">
     </div>
+    <script>
+        (function jsonp() {
+            let head = document.getElementsByTagName('head')[0]; // 获取head元素 把js放里面
+            let js = document.createElement('script');
+            js.src = 'http://127.0.0.1:3000/test?a=1&b=2&callback=foo'; // 设置请求地址
+            head.appendChild(js); // 这一步会发送请求
+        })()
+    </script>
 </body>
 </html>

@@ -2,15 +2,21 @@ const webpack = require("webpack");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlWebpackPlugin = require("add-asset-html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
+const TerserPlugin = require('terser-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const AntdScssThemePlugin = require('antd-scss-theme-plugin');
+// const Dashboard = require('webpack-dashboard')
+const DashboardPlugin = require('webpack-dashboard/plugin')
+
 const path = require('path');
 const config = {
   buildPath: path.resolve(`build/localhost`),
 }
 const srcPath = path.resolve('./src')
 const dllPath = path.resolve('./dll')
+
+// const dashboard = new Dashboard()
+
 module.exports = (env, argv) => {
   console.log(`mode: ${argv.mode}`);
   return {
@@ -18,6 +24,8 @@ module.exports = (env, argv) => {
       app: path.resolve(__dirname, 'src/index.js'),
     },
     output: {
+      path: path.resolve('./dist'),
+      filename: '[name].js?[hash:6]',
       publicPath: '/',
     },
     module: {
@@ -109,21 +117,17 @@ module.exports = (env, argv) => {
     },
     optimization: {
       minimizer: [
-        new UglifyJsPlugin({
-          cache: true,
-          parallel: true,
-          sourceMap: true,
-        })
+        new TerserPlugin(),
       ],
       splitChunks: {
         chunks: "async",
-        maxSize: 30000,
+        minSize: 30000,
         minChunks: 1,
         maxInitialRequests: 3,
         maxAsyncRequests: 5,
         name: false,
         cacheGroups: { //cache info
-          vendors: {
+          vendor: {
             test: /node_modules\/(.*)\.js/,
             chunks: 'initial',
             priority: -10,
@@ -169,7 +173,8 @@ module.exports = (env, argv) => {
           filepath: path.join(__dirname, './dll', 'dll.*.js')
         }),
         new webpack.HotModuleReplacementPlugin()
-      ]
+      ],
+      new DashboardPlugin()
     ],
     devServer: {
       historyApiFallback: true,
@@ -218,7 +223,7 @@ module.exports = (env, argv) => {
         },
       }
     },
-    devtool: argv.mode === 'production' ? 'source-map': 'inline-source-map',
+    devtool: argv.mode === 'production' ? false : 'inline-source-map',
     //source-map 整个 source map 作为一个单独的文件生成。它为 bundle 添加了一个引用注释，以便开发工具知道在哪里可以找到它
     //eval-source-map 开发环境的最佳品质的 source map  首次构建较慢 重新构建较快 映射原始代码 同时反映正常行数 但是不利于调试
     resolve: {

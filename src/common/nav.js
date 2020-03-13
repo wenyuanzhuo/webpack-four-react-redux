@@ -101,6 +101,25 @@ export const getNavData = [
           }
         ]
       },
+      {
+        name: '性能优化',
+        icon: 'dashboard',
+        path: 'data',
+        children: [
+          {
+            name: '数据渲染(时间分片)',
+            icon: '',
+            path: 'dateSiding',
+            component: createLoadable(() => import('components/Data/DateSiding'))
+          },
+          {
+            name: '数据渲染(虚拟列表)',
+            icon: '',
+            path: 'virtualList',
+            component: createLoadable(() => import('components/Data/VirtualList'))
+          }
+        ]
+      },
     ]
   }
 ]

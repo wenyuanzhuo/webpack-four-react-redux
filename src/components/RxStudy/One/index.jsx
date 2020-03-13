@@ -20,7 +20,7 @@ export default class RxjsStudyOne extends React.Component {
         <Button1 primary>send message `` </Button1>
         <div className="swiper">
           <ul>
-            { textList.map((item, index) => <li key={index}>item</li>) }
+            { textList.map((item, index) => <li key={index}>{item}</li>) }
           </ul>
         </div>
       </div>
