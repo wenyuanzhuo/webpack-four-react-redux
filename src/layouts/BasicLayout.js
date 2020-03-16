@@ -30,8 +30,8 @@ class BasicLayout extends Component {
           <Headers 
             {...this.props}
           />
-          <div className="app-page">
-            <Content style={{ margin: '24px 24px 0', height: '100%'}}>
+          <div className="app-page" style={{ height: '100%' }}>
+            <Content style={{ margin: '0px 24px 0', height: '100%'}}>
               {
                 renderRoutes(getRouteData('BasicLayout'))
                 // <Switch>
