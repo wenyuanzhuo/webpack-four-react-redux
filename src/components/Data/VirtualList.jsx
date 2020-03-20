@@ -1,5 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
+
+
 const onceRender = (current = 0) => Array.from({ length: 100 }, (_, i) => i + current)
 const height = 50
 const bufferSize = 5
@@ -7,17 +9,15 @@ export default class VirtualList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      visibleData: [],
-      beforeArr: [],
-      afterArr: [],
-      startOffset: 0
+      visibleData: [], // 需要渲染的数据
+      startOffset: 0  // 偏移量
     }
-    this.myRef = React.createRef();
-    this.listData = onceRender()
-    this.startIndex = 0
-    this.endIndex = 0
-    this.visibleCount = 0
-    this.phantomHeight = this.listData.length * height
+    this.myRef = React.createRef(); // 滚动视窗
+    this.listData = onceRender() // 总数据
+    this.startIndex = 0 // 渲染的头部下标
+    this.endIndex = 0 // 渲染的尾部部下标
+    this.visibleCount = 0  // 展示的item数量
+    this.phantomHeight = this.listData.length * height // 产生滚动的行框盒子高度
   }
   componentDidMount() {
     this.visibleCount = Math.ceil(this.myRef.current.clientHeight / height)
@@ -40,15 +40,13 @@ export default class VirtualList extends React.Component {
   updateDom = (startIndex = 0, scrollTop = 0) => {
     this.startIndex = startIndex
     this.endIndex = this.startIndex + this.visibleCount
-    const aboveIndex = this.startIndex - bufferSize > 0 ? Math.min(this.startIndex, this.startIndex - bufferSize): this.startIndex
-    const belowIndex = Math.min(this.listData.length, this.endIndex + bufferSize)
     this.scrollTop = scrollTop
-    console.log({
-      aboveIndex,
-      belowIndex,
-      diff: this.startIndex - bufferSize,
-      min: Math.min(this.startIndex, this.startIndex - bufferSize)
-    })
+    const aboveIndex = this.startIndex - bufferSize > 0
+    ?
+    Math.min(this.startIndex, this.startIndex - bufferSize)
+    :
+    this.startIndex
+    const belowIndex = Math.min(this.listData.length, this.endIndex + bufferSize)
     const startOffset =  this.startIndex - bufferSize > 0
     ?
     scrollTop - (scrollTop % height) - bufferSize * height

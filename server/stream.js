@@ -8,10 +8,13 @@ readFs.on('error',function(err){
   console.log('ERROR: ' + err);
 })
 readFs.on('end',() => {
-  console.log('end', chunks);
+  // console.log('end', chunks);
 })
 readFs.on('pipe', (chunk) => {
   
 })
 readFs.pipe(writeFs)
 // writeFs.end()
+
+
+console.log(path.join(__dirname), '\n' , path.join(__dirname))
