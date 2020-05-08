@@ -87,7 +87,7 @@ module.exports = (env, argv) => {
             AntdScssThemePlugin.themify({
               loader: 'sass-loader',
               options: {
-                // indentedSyntax: true, 
+                indentedSyntax: true, 
                 outputStyle: 'expanded',// nested嵌套 compact紧凑 compressed压缩 expanded延展
               }
             })

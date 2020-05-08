@@ -23,6 +23,7 @@ const mapDispatchToProps = (dispatch) => {
 class BasicLayout extends Component {
   render() {
     const { getRouteData, logout, user } = this.props;
+    console.log(getRouteData('BasicLayout'), renderRoutes(getRouteData('BasicLayout')))
     return  (
       <Layout className="basic-container">
         <SideBar {...this.props}/>

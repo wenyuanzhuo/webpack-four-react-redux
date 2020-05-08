@@ -6,7 +6,7 @@ import { renderRoutes } from 'react-router-config'
 class UserLayout extends Component {
   render() {
     const { getRouteData } = this.props;
-
+    console.log(getRouteData('UserLayout'), renderRoutes(getRouteData('UserLayout')))
     return (
       <div className="user-container">
         <div className="top">
