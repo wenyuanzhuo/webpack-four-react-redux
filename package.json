@@ -42,7 +42,7 @@
     "immutable": "^3.8.2",
     "koa-router": "^8.0.8",
     "less-loader": "^4.1.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "mini-css-extract-plugin": "^0.4.3",
     "mongoose": "^5.9.5",
     "node-sass": "^4.9.3",
