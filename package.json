@@ -45,7 +45,7 @@
     "lodash": "^4.17.11",
     "mini-css-extract-plugin": "^0.4.3",
     "mongoose": "^5.9.5",
-    "node-sass": "^4.9.3",
+    "node-sass": "^7.0.0",
     "nodemon": "^2.0.2",
     "normalize-scss": "^7.0.1",
     "normalize.css": "^8.0.0",
